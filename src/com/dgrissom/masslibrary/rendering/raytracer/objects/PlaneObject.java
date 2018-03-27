@@ -20,14 +20,7 @@ public class PlaneObject extends Plane implements RayTraceable {
         Vector3d n = getNormal();
         Vector3d l = ray.getDirection();
 
-        double dotProd = l.dotProduct(n);
-        if (dotProd == 0) {
-            // parallel
-            return null;
-        }
-
-        double d = Vector3d.from(p0.subtract(l0)).dotProduct(n) / dotProd;
-        return ray.point(d);
+        return null;
     }
     @Override
     public Vector3d normal(Point3d point) {

@@ -1,8 +1,8 @@
 package com.dgrissom.masslibrary.math.geom.r2.polygon;
 
+import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.geom.Transform;
 import com.dgrissom.masslibrary.math.geom.Transformable;
-import com.dgrissom.masslibrary.math.geom.r2.Intersections2d;
 import com.dgrissom.masslibrary.math.geom.r2.LineSegment2d;
 import com.dgrissom.masslibrary.math.geom.r2.Point2d;
 
@@ -29,21 +29,6 @@ public interface Polygon extends Transformable {
         return Rectangle2d.from(left, top, right, bottom);
     }
 
-    // not self-intersecting
-    // https://en.wikipedia.org/wiki/Simple_polygon
-    default boolean isSimple() {
-        List<LineSegment2d> sides = getSides();
-        for (int i = 0; i < sides.size(); i++) {
-            for (int j = 0; j < sides.size(); j++) {
-                if (i == j)
-                    continue;
-                if (Intersections2d.intersects(sides.get(i), sides.get(j)))
-                    return false;
-            }
-        }
-        return true;
-    }
-
     default int vertexCount() {
         return getSides().size();
     }
@@ -63,6 +48,24 @@ public interface Polygon extends Transformable {
         for (Point2d vertex : vertices)
             avg = avg.add(vertex);
         return avg.divide(vertices.size());
+    }
+
+    // only works for simple polygons
+    default double area() {
+        // shoelace formula
+        // https://en.wikipedia.org/wiki/Shoelace_formula
+        List<Point2d> vertices = vertices();
+        double sum = 0;
+        for (int i = 0; i < vertexCount() - 1; i++) {
+            Point2d v1 = vertices.get(i);
+            Point2d v2 = vertices.get(i + 1);
+            Matrix m = Matrix.square(
+                    v1.getX(), v2.getX(),
+                    v1.getY(), v2.getY()
+            );
+            sum += m.determinant();
+        }
+        return 0.5 * Math.abs(sum);
     }
 
     @Override

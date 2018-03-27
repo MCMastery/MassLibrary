@@ -57,6 +57,10 @@ public final class LineSegment2d {
         return setEnd(new Point2d(this.end.getX(), y2));
     }
 
+    public LineSegment2d swapPoints() {
+        return new LineSegment2d(this.end, this.start);
+    }
+
     public Vector2d direction() {
         return Vector2d.direction(this.start, this.end);
     }
@@ -83,6 +87,11 @@ public final class LineSegment2d {
     // angle with start as origin and end as the point
     public double angle() {
         return this.end.angle(this.start);
+    }
+    public Vector2d normal() {
+        double magnitude = 1;
+        double angle = Math.PI * 2 - angle();
+        return new PolarCoordinates(magnitude, angle).toVector();
     }
 
     public Point2d point(double distanceAlongLine) {
@@ -115,9 +124,21 @@ public final class LineSegment2d {
                 || Intersections2d.contains(this, this.end, error));
     }
 
+    public LineSegment2d translate(double tx, double ty) {
+        return setStart(this.start.add(tx, ty))
+                .setEnd(this.end.add(tx, ty));
+    }
+
     @Override
     public String toString() {
         return Formatter.format(this);
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof LineSegment2d))
+            return false;
+        LineSegment2d other = (LineSegment2d) o;
+        return this.start.equals(other.getStart()) && this.end.equals(other.getEnd());
     }
 
     public static LineSegment2d from(Point2d start, double angle, double length) {

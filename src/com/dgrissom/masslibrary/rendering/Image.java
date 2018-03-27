@@ -5,7 +5,9 @@ import com.dgrissom.masslibrary.math.geom.r2.LineSegment2d;
 import com.dgrissom.masslibrary.math.geom.r2.Point2d;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Polygon;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Rectangle2d;
+import com.dgrissom.masslibrary.rendering.color.ColorSpace;
 import com.dgrissom.masslibrary.rendering.color.RGBColor;
+import com.dgrissom.masslibrary.rendering.color.Color;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -17,13 +19,18 @@ import java.util.List;
 public class Image {
     private final BufferedImage image;
     private final Graphics2D g2d;
+    private ColorSpace colorSpace;
 
     public Image(int width, int height) {
         this(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
     }
+    public Image(int width, int height, boolean alpha) {
+        this(new BufferedImage(width, height, alpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB));
+    }
     public Image(BufferedImage image) {
         this.image = image;
         this.g2d = this.image.createGraphics();
+        this.colorSpace = ColorSpace.SRGB;
     }
 
     public BufferedImage getImage() {
@@ -31,6 +38,12 @@ public class Image {
     }
     public Graphics2D getGraphics() {
          return this.g2d;
+    }
+    public ColorSpace getColorSpace() {
+        return this.colorSpace;
+    }
+    public void setColorSpace(ColorSpace colorSpace) {
+        this.colorSpace = colorSpace;
     }
     public double getWidth() {
         return this.image.getWidth();
@@ -46,10 +59,10 @@ public class Image {
         int rgb = this.image.getRGB(x, y);
         return RGBColor.fromRGB(rgb);
     }
-    public void setColor(RGBColor color) {
-        color = color.clamp();
-        this.g2d.setColor(new Color((float) color.getRed(), (float) color.getGreen(),
-                (float) color.getBlue(), (float) color.getOpacity()));
+    public void setColor(Color color) {
+        RGBColor rgb = color.toRGB(this.colorSpace).scaleToRange();
+        this.g2d.setColor(new java.awt.Color((float) rgb.getR(), (float) rgb.getG(),
+                (float) rgb.getB(), (float) rgb.getA()));
     }
 
     public void antialias(boolean antialias) {
@@ -61,25 +74,25 @@ public class Image {
         this.g2d.dispose();
     }
 
-    public void fill(RGBColor color) {
+    public void fill(Color color) {
         fill(bounds(), color);
     }
 
     // do this so transforms affect the point (instead of setRGB)
-    public void draw(Point2d point, RGBColor color) {
+    public void draw(Point2d point, Color color) {
         draw(new LineSegment2d(point, point), color);
     }
-    public void draw(LineSegment2d line, RGBColor color) {
+    public void draw(LineSegment2d line, Color color) {
         setColor(color);
         this.g2d.drawLine((int) Math.round(line.getX1()), (int) Math.round(line.getY1()),
                 (int) Math.round(line.getX2()), (int) Math.round(line.getY2()));
     }
 
-    public void draw(Polygon polygon, RGBColor color) {
+    public void draw(Polygon polygon, Color color) {
         for (LineSegment2d side : polygon.getSides())
             draw(side, color);
     }
-    public void fill(Polygon polygon, RGBColor color) {
+    public void fill(Polygon polygon, Color color) {
         setColor(color);
         List<Point2d> vertices = polygon.vertices();
         int[] xPoints = new int[vertices.size()];
@@ -92,13 +105,13 @@ public class Image {
         this.g2d.fillPolygon(xPoints, yPoints, vertices.size());
     }
 
-    public void draw(Circle2d circle, RGBColor color) {
+    public void draw(Circle2d circle, Color color) {
         setColor(color);
         this.g2d.drawOval((int) Math.round(circle.getCenter().getX() - circle.getRadius()),
                 (int) Math.round(circle.getCenter().getY() - circle.getRadius()),
                 (int) Math.round(circle.diameter()), (int) Math.round(circle.diameter()));
     }
-    public void fill(Circle2d circle, RGBColor color) {
+    public void fill(Circle2d circle, Color color) {
         setColor(color);
         this.g2d.fillOval((int) Math.round(circle.getCenter().getX() - circle.getRadius()),
                 (int) Math.round(circle.getCenter().getY() - circle.getRadius()),
@@ -113,7 +126,7 @@ public class Image {
         java.awt.geom.Rectangle2D awtRect = this.g2d.getFontMetrics().getStringBounds(text, this.g2d);
         return new Rectangle2d(awtRect.getWidth(), awtRect.getHeight());
     }
-    public void draw(String text, Point2d position, RGBColor color, TextAnchor anchor, double fontSize) {
+    public void draw(String text, Point2d position, Color color, TextAnchor anchor, double fontSize) {
         setColor(color);
         this.g2d.setFont(this.g2d.getFont().deriveFont((float) fontSize));
 

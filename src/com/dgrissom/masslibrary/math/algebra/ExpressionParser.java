@@ -1,6 +1,6 @@
 package com.dgrissom.masslibrary.math.algebra;
 
-import com.dgrissom.masslibrary.Strings;
+import com.dgrissom.masslibrary.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class ExpressionParser {
         String currentNumber = "";
         for (int i = 0; i < expression.length(); i++) {
             char ch = expression.charAt(i);
-            if (Strings.isDigit(ch) || ch == '.')
+            if (StringUtils.isDigit(ch) || ch == '.')
                 currentNumber += ch;
             else {
                 if (currentNumber.endsWith("."))
@@ -62,7 +62,7 @@ public class ExpressionParser {
         List<ConstantNode> operands = new ArrayList<>();
         Node operator = null;
         for (String token : tokens) {
-            if (Strings.isDouble(token)) {
+            if (StringUtils.isDouble(token)) {
                 ConstantNode constantNode = new ConstantNode(Double.parseDouble(token));
                 operands.add(constantNode);
             } else {

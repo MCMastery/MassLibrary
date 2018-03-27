@@ -2,8 +2,11 @@ package com.dgrissom.masslibrary.math.geom.r3;
 
 import com.dgrissom.masslibrary.Formatted;
 import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.math.Matrix;
+import com.dgrissom.masslibrary.math.geom.Transform;
+import com.dgrissom.masslibrary.math.geom.Transformable;
 
-public final class Point3d implements XYZ {
+public final class Point3d implements XYZ, Transformable {
     @Formatted
     private final double x, y, z;
 
@@ -77,6 +80,28 @@ public final class Point3d implements XYZ {
     }
     public double distance(Point3d other) {
         return Math.sqrt(distanceSquared(other));
+    }
+
+    // you may want 4 rows (x,y,z,1) for homogeneous coordinates
+    public Matrix toColumnMatrix(int rows) {
+        double[] d = new double[rows];
+        d[0] = this.x;
+        d[1] = this.y;
+        d[2] = this.z;
+        for (int i = 3; i < rows; i++)
+            d[i] = 1;
+        return Matrix.column(d);
+    }
+    public static Point3d fromColumnMatrix(Matrix matrix) {
+        return new Point3d(matrix.get(0, 0), matrix.get(1, 0), matrix.get(2, 0));
+    }
+
+    public Point3d multiply(Matrix matrix) {
+        return fromColumnMatrix(matrix.multiply(toColumnMatrix(matrix.getRows())));
+    }
+    @Override
+    public Point3d transform(Transform transform) {
+        return multiply(transform.matrix());
     }
 
     public Ray3d rayTo(Point3d point) {

@@ -47,9 +47,12 @@ public final class PolarCoordinates {
     }
 
     public Point2d toCartesian() {
+        return toVector().toPoint();
+    }
+    public Vector2d toVector() {
         double x = this.magnitude * Math.cos(this.angle) + this.pole.getX();
         double y = this.magnitude * Math.sin(this.angle) + this.pole.getY();
-        return new Point2d(x, y);
+        return new Vector2d(x, y);
     }
 
     @Override

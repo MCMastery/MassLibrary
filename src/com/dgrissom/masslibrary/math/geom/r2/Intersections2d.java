@@ -22,16 +22,23 @@ public final class Intersections2d {
     }
 
     // polygon must be simple
-    // see https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm
+    // https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm
     // line from point to centroid, extending far out, past the boundary of the polygon
     // if # of intersections of line with polygon sides is odd, the polygon contains the point
     public static boolean contains(Polygon polygon, Point2d point, Rectangle2d polygonBoundingBox, Point2d polygonCentroid,
                                    boolean trueOnEdge, double error) {
+        if (!contains(polygonBoundingBox, point))
+            return false;
+
+        // add a bit to the point so the line going through the centroid won't hit a vertex exactly
+        // (this would not return an intersection)
+        point = point.add(10e-8);
+
         int intersections = 0;
         // line from point to centroid
         LineSegment2d line = new LineSegment2d(point, polygonCentroid);
         // now extend so that the end of the line is outside the polygon
-        line = line.extend(polygonBoundingBox.diagonal().length());
+        line = line.extend(polygonBoundingBox.diagonal().length() * 8);
         for (LineSegment2d side : polygon.getSides()) {
             if (contains(side, point, error))
                 return trueOnEdge;
@@ -67,7 +74,7 @@ public final class Intersections2d {
     //todo faster way of doing this
     // maybe first check if bounding boxes intersect?
     public static boolean intersects(LineSegment2d l1, LineSegment2d l2) {
-        return !l1.parallel(l2) && intersection(l1, l2) != null;
+        return intersection(l1, l2) != null;
     }
     public static boolean intersects(LineSegment2d l, Polygon p) {
         for (LineSegment2d side : p.getSides())
@@ -75,7 +82,7 @@ public final class Intersections2d {
                 return true;
         return false;
     }
-    // see https://en.wikipedia.org/wiki/Line–line_intersection
+    // https://en.wikipedia.org/wiki/Line–line_intersection
     // throws IllegalArgumentException if lines overlap
     public static Point2d intersection(LineSegment2d l1, LineSegment2d l2) {
         // parallel or overlapping?
@@ -108,7 +115,7 @@ public final class Intersections2d {
         Point2d point = new Point2d(xNumerator / denominator, yNumerator / denominator);
         // at this point, we've been assuming lines are infinite
         // now we have to make sure point is actually on both lines
-        if (contains(l1, point, 0.0001) && contains(l2, point, 0.0001))
+        if (contains(l1, point, 10e-10) && contains(l2, point, 10e-10))
             return point;
         return null;
     }
