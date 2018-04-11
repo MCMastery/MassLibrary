@@ -14,7 +14,6 @@ public class PolarPlot {
     public PolarPlot(int width, int height, double pixelsPerUnit) {
         this.image = new Image(width, height);
         this.pixelsPerUnit = pixelsPerUnit;
-        this.image.antialias(true);
     }
 
     public void renderBackground() {

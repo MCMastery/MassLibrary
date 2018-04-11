@@ -1,30 +1,24 @@
 package com.dgrissom.masslibrary.math.statistics;
 
 import com.dgrissom.masslibrary.math.functions.LinearFunction;
-import com.dgrissom.masslibrary.math.geom.r2.Point2d;
-
-import java.util.Collection;
+import com.dgrissom.masslibrary.math.geom.r2.PointSet2d;
 
 // https://en.wikipedia.org/wiki/Simple_linear_regression
 public class SimpleLinearRegression {
-    private final Collection<Point2d> data;
+    private final PointSet2d points;
 
-    public SimpleLinearRegression(Collection<Point2d> data) {
-        this.data = data;
+    public SimpleLinearRegression(PointSet2d points) {
+        this.points = points;
     }
 
-    public Collection<Point2d> getData() {
-        return this.data;
+    public PointSet2d getPoints() {
+        return this.points;
     }
 
     public LinearFunction calculate() {
-        DataSet xSet = new DataSet();
-        DataSet ySet = new DataSet();
-        for (Point2d point : this.data) {
-            xSet.add(point.getX());
-            ySet.add(point.getY());
-        }
-        double covariance = xSet.covariance(ySet);
+        DataSet xSet = this.points.xSet();
+        DataSet ySet = this.points.ySet();
+        double covariance = this.points.covariance();
         double variance = xSet.sampleVariance();
         double slope = (covariance / variance);
         // y = b + mx

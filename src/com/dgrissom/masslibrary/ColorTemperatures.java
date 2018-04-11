@@ -19,7 +19,6 @@ public final class ColorTemperatures {
 
     public static void main(String[] args) throws IOException {
         Image image = new Image(600, 200, false);
-        image.antialias(true);
         for (double x = 0; x < image.getWidth(); x++) {
             double cct = cct(image, x);
             Color color = new XYYColor(ChromaticityCoordinates.from(cct), 1);

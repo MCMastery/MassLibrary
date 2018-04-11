@@ -18,7 +18,7 @@ public final class RegularPolygon implements Polygon {
     }
 
     @Override
-    public List<LineSegment2d> getSides() {
+    public List<LineSegment2d> sides() {
         return this.sides;
     }
 
@@ -30,11 +30,11 @@ public final class RegularPolygon implements Polygon {
     }
     // just get first vertex (circumradius = distance from center to any vertex)
     public double circumradius() {
-        return centroid().distance(this.sides.get(0).getStart());
+        return vertices().centroid().distance(this.sides.get(0).getStart());
     }
     // distance from center to midpoint on side
     public double apothem() {
-        return centroid().distance(this.sides.get(0).midpoint());
+        return vertices().centroid().distance(this.sides.get(0).midpoint());
     }
     public double sideLength() {
         return this.sides.get(0).length();
@@ -46,12 +46,13 @@ public final class RegularPolygon implements Polygon {
     // also 0.5pa, 0.25ns^2 * cot(pi/n),
     // na^2 * tan(pi/2), 0.5 * nR^2 * sin((2pi)/n)
     // A = 0.5nsa would be fastest (no trig functions)
+    @Override
     public double area() {
         return 0.5 * vertexCount() * sideLength() * apothem();
     }
 
     public Circle2d circumcircle() {
-        return new Circle2d(centroid(), circumradius());
+        return new Circle2d(vertices().centroid(), circumradius());
     }
 
     public SchlafliSymbol schlafliSymbol() {

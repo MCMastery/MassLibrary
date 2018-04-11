@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r3;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 
 public final class Ray3d {
     @Formatted
@@ -36,7 +36,7 @@ public final class Ray3d {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 
     // returns a ray starting at origin going in the direction of point

@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.rendering.color;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.GeneralMath;
 import com.dgrissom.masslibrary.math.Matrix;
 
@@ -188,7 +188,7 @@ public class RGBColor implements Color {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 
     public static RGBColor fromRGB(int rgb) {

@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.rendering.color;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 
 // xyY
 // https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
@@ -64,7 +64,7 @@ public class XYYColor implements Color {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 
     // https://en.wikipedia.org/wiki/CIE_1931_color_space#Mixing_colors_specified_with_the_CIE_xy_chromaticity_diagram

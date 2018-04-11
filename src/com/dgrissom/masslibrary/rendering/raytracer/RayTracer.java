@@ -4,124 +4,91 @@ import com.dgrissom.masslibrary.math.geom.r2.Point2d;
 import com.dgrissom.masslibrary.math.geom.r3.Point3d;
 import com.dgrissom.masslibrary.math.geom.r3.Ray3d;
 import com.dgrissom.masslibrary.rendering.Image;
+import com.dgrissom.masslibrary.rendering.color.Color;
 import com.dgrissom.masslibrary.rendering.color.RGBColor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public final class RayTracer {
-    private List<RayTraceable> objects;
-    private PhongLighting lighting;
-    private int width, height, supersampleSize;
-    private double imageZ;
+public class RayTracer {
+    private RayTracingScene scene;
+    private Point3d camera, imageCenter;
+    private int imageWidth, imageHeight;
 
     public RayTracer() {
-        this.objects = new ArrayList<>();
-        this.lighting = new PhongLighting();
-        this.width = 800;
-        this.height = 800;
-        this.supersampleSize = 1;
-        this.imageZ = 1;
+        this.scene = null;
+        this.imageWidth = 400;
+        this.imageHeight = 400;
+        this.camera = Point3d.origin();
+        // not camera position - this is the image plane location
+        // where rays are sent from camera through image plane pixels
+        this.imageCenter = new Point3d(0, 0, 1);
     }
 
-    public List<RayTraceable> getObjects() {
-        return this.objects;
+    public RayTracingScene getScene() {
+        return this.scene;
     }
-    public void add(RayTraceable... objects) {
-        this.objects.addAll(Arrays.asList(objects));
+    public void setScene(RayTracingScene scene) {
+        this.scene = scene;
     }
-    public PhongLighting getLighting() {
-        return this.lighting;
+    public int getImageWidth() {
+        return this.imageWidth;
     }
-    public int getWidth() {
-        return this.width;
+    public void setImageWidth(int imageWidth) {
+        this.imageWidth = imageWidth;
     }
-    public void setWidth(int width) {
-        this.width = width;
+    public int getImageHeight() {
+        return this.imageHeight;
     }
-    public int getHeight() {
-        return this.height;
+    public void setImageHeight(int imageHeight) {
+        this.imageHeight = imageHeight;
     }
-    public void setHeight(int height) {
-        this.height = height;
+    public Point3d getImageCenter() {
+        return this.imageCenter;
     }
-    public int getSupersampleSize() {
-        return this.supersampleSize;
+    public void setImageCenter(Point3d imageCenter) {
+        this.imageCenter = imageCenter;
     }
-    public void setSupersampleSize(int supersampleSize) {
-        this.supersampleSize = supersampleSize;
+    public Point3d getCamera() {
+        return this.camera;
     }
-    public double getImageZ() {
-        return this.imageZ;
-    }
-    public void setImageZ(double imageZ) {
-        this.imageZ = imageZ;
-    }
-
-    private Image supersample(Image image) {
-        Image supersampled = new Image(this.width, this.height);
-        for (int x = 0; x < supersampled.getWidth(); x++) {
-            for (int y = 0; y < supersampled.getHeight(); y++) {
-                RGBColor avg = RGBColor.BLACK;
-                for (int subX = 0; subX < this.supersampleSize; subX++) {
-                    for (int subY = 0; subY < this.supersampleSize; subY++) {
-                        int imageX = x * this.supersampleSize + subX;
-                        int imageY = y * this.supersampleSize + subY;
-                        avg = avg.add(image.getColor(imageX, imageY));
-                    }
-                }
-                avg = avg.divide(this.supersampleSize * this.supersampleSize);
-                supersampled.draw(new Point2d(x, y), avg);
-            }
-        }
-        return supersampled;
+    public void setCamera(Point3d camera) {
+        this.camera = camera;
     }
 
     public Image render() {
-        Image image = new Image(this.width * this.supersampleSize, this.height * this.supersampleSize);
-        image.fill(RGBColor.BLACK);
+        Image image = new Image(this.imageWidth, this.imageHeight, false);
+        for (int x = 0; x < this.imageWidth; x++) {
+            for (int y = 0; y < this.imageHeight; y++) {
+                double sceneX = (x - this.imageWidth / 2.0) / (double) this.imageWidth + this.imageCenter.getX();
+                double sceneY = (y - this.imageHeight / 2.0) / (double) this.imageHeight + this.imageCenter.getY();
+                double sceneZ = this.imageCenter.getZ();
+                Ray3d ray = Ray3d.from(this.camera, new Point3d(sceneX, sceneY, sceneZ));
 
-        Point3d camera = this.lighting.getViewer();
-        double imageZ = 1;
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                // ray starting from camera going to the pixel
-                Point3d rayToward = new Point3d(x, y, 0)
-                        .subtract(image.getWidth() / 2.0, image.getHeight() / 2.0, 1)
-                        .divide(image.getWidth(), image.getHeight(), 1)
-                        .setZ(imageZ);
-                rayToward = camera.add(rayToward);
+                List<RayHit> hits = new ArrayList<>();
+                for (RayTraceable object : this.scene)
+                    hits.add(object.hit(ray));
+                // object.hit will return null if they never intersect
+                hits.remove(null);
 
-                Ray3d ray = camera.rayTo(rayToward);
-                // get closest hit
-                RayHit hit = null;
-                double hitDistanceSq = 0;
-                for (RayTraceable object : this.objects) {
-                    RayHit rh = object.hit(ray);
-                    if (rh == null)
-                        continue;
+                // sort hits so closest is first
+                hits.sort((o1, o2) -> {
+                    double distSq1 = this.camera.distanceSquared(o1.getPoint());
+                    double distSq2 = this.camera.distanceSquared(o2.getPoint());
+                    return Double.compare(distSq1, distSq2);
+                });
 
-                    double distSq = camera.distanceSquared(rh.getPoint());
-                    if (hit == null || distSq < hitDistanceSq) {
-                        hit = rh;
-                        hitDistanceSq = distSq;
-                    }
-                }
-
-                // ray doesn't hit anything! don't color anything
-                if (hit == null)
+                // no hits
+                if (hits.size() == 0)
                     continue;
 
-                RGBColor color = this.lighting.calculate(hit);
+                double illumination = this.scene.getLighting().illumination(hits.get(0), this.camera);
+                if (illumination < 0)
+                    continue;
+                Color color = RGBColor.BLUE.multiply(illumination);
                 image.draw(new Point2d(x, y), color);
             }
         }
-
-        if (this.supersampleSize == 1)
-            return image;
-
-        // supersample
-        return supersample(image);
+        return image;
     }
 }

@@ -2,11 +2,9 @@ package com.dgrissom.masslibrary.math.geom.r2;
 
 import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.NumberTheory;
+import com.dgrissom.masslibrary.math.functions.LinearFunction;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Polygon;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Rectangle2d;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class Intersections2d {
     private Intersections2d() {}
@@ -16,6 +14,9 @@ public final class Intersections2d {
         return Math.abs(l.getStart().distance(p) + p.distance(l.getEnd()) - l.length()) < error;
     }
 
+    public static boolean contains(Circle2d c, Point2d p) {
+        return p.distanceSquared(c.getCenter()) < c.getRadius() * c.getRadius();
+    }
     public static boolean contains(Rectangle2d r, Point2d p) {
         return p.getX() >= r.left() && p.getY() >= r.top()
                 && p.getX() < r.right() && p.getY() < r.bottom();
@@ -39,7 +40,7 @@ public final class Intersections2d {
         LineSegment2d line = new LineSegment2d(point, polygonCentroid);
         // now extend so that the end of the line is outside the polygon
         line = line.extend(polygonBoundingBox.diagonal().length() * 8);
-        for (LineSegment2d side : polygon.getSides()) {
+        for (LineSegment2d side : polygon.sides()) {
             if (contains(side, point, error))
                 return trueOnEdge;
             if (intersects(line, side))
@@ -48,6 +49,7 @@ public final class Intersections2d {
         return NumberTheory.isOdd(intersections);
     }
 
+    // only works for convex polygons
     public static boolean contains(Polygon polygon, LineSegment2d line, Rectangle2d polygonBoundingBox, Point2d polygonCentroid,
                                    boolean trueOnEdge, double error) {
         return contains(polygon, line.getStart(), polygonBoundingBox, polygonCentroid, trueOnEdge, error)
@@ -55,18 +57,18 @@ public final class Intersections2d {
     }
 
     // does not return anything if one polygon contains the other
-    public static List<Point2d> intersections(LineSegment2d l, Polygon p) {
-        List<Point2d> intersections = new ArrayList<>();
-        for (LineSegment2d side : p.getSides()) {
+    public static PointSet2d intersections(LineSegment2d l, Polygon p) {
+        PointSet2d intersections = new PointSet2d();
+        for (LineSegment2d side : p.sides()) {
             Point2d intersection = intersection(l, side);
             if (intersection != null)
                 intersections.add(intersection);
         }
         return intersections;
     }
-    public static List<Point2d> intersections(Polygon p1, Polygon p2) {
-        List<Point2d> intersections = new ArrayList<>();
-        for (LineSegment2d s1 : p1.getSides())
+    public static PointSet2d intersections(Polygon p1, Polygon p2) {
+        PointSet2d intersections = new PointSet2d();
+        for (LineSegment2d s1 : p1.sides())
             intersections.addAll(intersections(s1, p2));
         return intersections;
     }
@@ -77,18 +79,18 @@ public final class Intersections2d {
         return intersection(l1, l2) != null;
     }
     public static boolean intersects(LineSegment2d l, Polygon p) {
-        for (LineSegment2d side : p.getSides())
+        for (LineSegment2d side : p.sides())
             if (intersection(l, side) != null)
                 return true;
         return false;
     }
     // https://en.wikipedia.org/wiki/Line–line_intersection
-    // throws IllegalArgumentException if lines overlap
+    // throws IllegalArgumentException if lines overlap or if they are parallel
     public static Point2d intersection(LineSegment2d l1, LineSegment2d l2) {
         // parallel or overlapping?
         if (l1.parallel(l2))
-            return null;
-        else if (l1.overlaps(l2, 0.0001))
+            throw new IllegalArgumentException("lines are parallel");
+        else if (l1.overlaps(l2, 10e-5))
             throw new IllegalArgumentException("lines overlap");
 
         double x1 = l1.getX1(), y1 = l1.getY1(), x2 = l1.getX2(), y2 = l1.getY2();
@@ -118,5 +120,12 @@ public final class Intersections2d {
         if (contains(l1, point, 10e-10) && contains(l2, point, 10e-10))
             return point;
         return null;
+    }
+
+    // https://en.wikipedia.org/wiki/Line–line_intersection
+    public static Point2d intersection(LinearFunction l1, LinearFunction l2) {
+        double a = l1.getSlope(), b = l2.getSlope();
+        double c = l1.getYIntercept(), d = l2.getYIntercept();
+        return new Point2d((d - c) / (a - b), (a * d - b * c) / (a - b));
     }
 }

@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.rendering.color;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 
 public class LabColor implements Color {
     // used in conversions
@@ -198,6 +198,6 @@ public class LabColor implements Color {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 }

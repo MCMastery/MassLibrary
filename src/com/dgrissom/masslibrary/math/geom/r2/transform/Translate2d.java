@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r2.transform;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.geom.InvertibleTransform;
 import com.dgrissom.masslibrary.math.geom.r2.XY;
@@ -10,6 +10,9 @@ public class Translate2d implements InvertibleTransform, XY {
     @Formatted
     private final double tx, ty;
 
+    public Translate2d(XY xy) {
+        this(xy.getX(), xy.getY());
+    }
     public Translate2d(double tx, double ty) {
         this.tx = tx;
         this.ty = ty;
@@ -37,6 +40,6 @@ public class Translate2d implements InvertibleTransform, XY {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 }

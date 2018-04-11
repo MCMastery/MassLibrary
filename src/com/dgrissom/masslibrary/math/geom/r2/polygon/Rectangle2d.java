@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r2.polygon;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.geom.r2.LineSegment2d;
 import com.dgrissom.masslibrary.math.geom.r2.Point2d;
 
@@ -115,6 +115,10 @@ public final class Rectangle2d implements Polygon {
         return setPosition(center.subtract(this.width / 2, this.height / 2));
     }
 
+    public Point2d center() {
+        return this.position.add(this.width / 2, this.height / 2);
+    }
+
     public LineSegment2d diagonal() {
         return new LineSegment2d(this.position, bottomRight());
     }
@@ -135,7 +139,10 @@ public final class Rectangle2d implements Polygon {
     // width becomes width +  2 * amount (adds amount to all sides)
     // (think padding)
     public Rectangle2d expand(double horizontalAmount, double verticalAmount) {
-        return from(centroid(), this.width + horizontalAmount * 2, this.height + verticalAmount * 2);
+        return from(center(), this.width + horizontalAmount * 2, this.height + verticalAmount * 2);
+    }
+    public Rectangle2d scale(double sx, double sy) {
+        return from(center(), this.width * sx, this.height * sy);
     }
     public Rectangle2d translate(double tx, double ty) {
         return setPosition(this.position.add(tx, ty));
@@ -152,23 +159,14 @@ public final class Rectangle2d implements Polygon {
         return this.width == this.height;
     }
 
-    // simplified
     @Override
-    public Point2d centroid() {
-        return this.position.add(this.width / 2, this.height / 2);
-    }
-    @Override
-    public Rectangle2d boundingBox() {
-        return this;
-    }
-    @Override
-    public List<LineSegment2d> getSides() {
+    public List<LineSegment2d> sides() {
         return Arrays.asList(topSide(), rightSide(), bottomSide(), leftSide());
     }
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 
     public static Rectangle2d from(double left, double top, double right, double bottom) {

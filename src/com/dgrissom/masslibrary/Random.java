@@ -1,5 +1,9 @@
 package com.dgrissom.masslibrary;
 
+import com.dgrissom.masslibrary.math.geom.r2.Point2d;
+import com.dgrissom.masslibrary.math.geom.r2.PointSet2d;
+import com.dgrissom.masslibrary.math.geom.r2.polygon.Rectangle2d;
+import com.dgrissom.masslibrary.rendering.color.HSVColor;
 import com.dgrissom.masslibrary.rendering.color.RGBColor;
 
 public final class Random {
@@ -28,7 +32,33 @@ public final class Random {
         return random(max - min + 1) + min;
     }
 
+    public static Point2d point2d(double minX, double minY, double maxX, double maxY) {
+        return new Point2d(random(minX, maxX), random(minY, maxY));
+    }
+    public static Point2d point2d(Point2d min, Point2d max) {
+        return point2d(min.getX(), min.getY(), max.getX(), max.getY());
+    }
+    public static Point2d point2d(Rectangle2d bounds) {
+        return point2d(bounds.left(), bounds.top(), bounds.right(), bounds.bottom());
+    }
+
+    public static PointSet2d pointSet2d(int points, double minX, double minY, double maxX, double maxY) {
+        PointSet2d set = new PointSet2d();
+        for (int i = 0; i < points; i++)
+            set.add(point2d(minX, minY, maxX, maxY));
+        return set;
+    }
+    public static PointSet2d pointSet2d(int points, Point2d min, Point2d max) {
+        return pointSet2d(points, min.getX(), min.getY(), max.getX(), max.getY());
+    }
+    public static PointSet2d pointSet2d(int points, Rectangle2d bounds) {
+        return pointSet2d(points, bounds.left(), bounds.top(), bounds.right(), bounds.bottom());
+    }
+
     public static RGBColor rgb() {
         return new RGBColor(random(), random(), random());
+    }
+    public static HSVColor hsv() {
+        return new HSVColor(random(0, 360.0), random(), random());
     }
 }

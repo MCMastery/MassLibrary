@@ -2,8 +2,8 @@ package com.dgrissom.masslibrary;
 
 import java.lang.reflect.Field;
 
-public final class Formatter {
-    private Formatter() {}
+public final class ObjectFormatter {
+    private ObjectFormatter() {}
 
     // Returns a string containing the object's information, for debugging
     // Format: ClassName[var1=somevalue, var2=somevalue]
@@ -17,13 +17,16 @@ public final class Formatter {
             Formatted annotation = field.getAnnotation(Formatted.class);
             if (annotation != null) {
                 String varName = field.getName();
+                String s;
                 try {
                     String value = String.valueOf(field.get(object));
-                    string += varName + "=" + value + ", ";
+                    s = varName + "=" + value + ", ";
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
-                    string += varName + "=" + "{Unavailable}, ";
+                    s = varName + "=" + "{Unavailable}, ";
                 }
+
+                string += s;
             }
         }
         // remove last ", "

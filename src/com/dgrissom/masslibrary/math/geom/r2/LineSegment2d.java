@@ -1,13 +1,13 @@
 package com.dgrissom.masslibrary.math.geom.r2;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.functions.LinearFunction;
+import com.dgrissom.masslibrary.math.geom.Transform;
+import com.dgrissom.masslibrary.math.geom.Transformable;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Rectangle2d;
 
-import java.util.List;
-
-public final class LineSegment2d {
+public final class LineSegment2d implements Transformable {
     @Formatted
     private final Point2d start, end;
 
@@ -100,7 +100,7 @@ public final class LineSegment2d {
 
     // returns null if line segment never crosses bounds
     public LineSegment2d clamp(Rectangle2d bounds) {
-        List<Point2d> intersections = Intersections2d.intersections(this, bounds);
+        PointSet2d intersections = Intersections2d.intersections(this, bounds);
         if (intersections == null || intersections.size() == 0)
             return null;
         // one point is inside
@@ -124,14 +124,25 @@ public final class LineSegment2d {
                 || Intersections2d.contains(this, this.end, error));
     }
 
+    public LinearFunction toLinearFunction() {
+        return LinearFunction.from(this.start, this.end);
+    }
+    public LinearFunction perpendicularBisector() {
+        return LinearFunction.from(midpoint(), -1 / slope());
+    }
+
     public LineSegment2d translate(double tx, double ty) {
         return setStart(this.start.add(tx, ty))
                 .setEnd(this.end.add(tx, ty));
     }
+    @Override
+    public LineSegment2d transform(Transform transform) {
+        return new LineSegment2d(this.start.transform(transform), this.end.transform(transform));
+    }
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
     @Override
     public boolean equals(Object o) {

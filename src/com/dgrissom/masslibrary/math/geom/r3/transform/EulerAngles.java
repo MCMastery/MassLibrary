@@ -10,50 +10,56 @@ public class EulerAngles implements Transform {
         XZX {
             @Override
             public Matrix matrix(double s1, double s2, double s3, double c1, double c2, double c3) {
-                return Matrix.square(c2, -c3*s2, s2*s3,
-                                     c1*s2, c1*c2*c3-s1*s3, -c3*s1-c1*c2*s3,
-                                     s1*s2, c1*s3+c2*c3*s1, c1*c3-c2*s1*s3);
+                return Matrix.square(c2, -c3*s2, s2*s3, 0,
+                                     c1*s2, c1*c2*c3-s1*s3, -c3*s1-c1*c2*s3, 0,
+                                     s1*s2, c1*s3+c2*c3*s1, c1*c3-c2*s1*s3, 0,
+                                     0, 0, 0, 1);
             }
         },
         XYX {
             @Override
             public Matrix matrix(double s1, double s2, double s3, double c1, double c2, double c3) {
-                return Matrix.square(c2, s2*s3, c3*s2,
-                                     s1*s2, c1*c3-c2*s1*s3, -c1*s3-c2*c3*s1,
-                                     -c1*s2, c3*s1+c1*c2*s3, c1*c2*c3-s1*s3);
+                return Matrix.square(c2, s2*s3, c3*s2, 0,
+                                     s1*s2, c1*c3-c2*s1*s3, -c1*s3-c2*c3*s1, 0,
+                                     -c1*s2, c3*s1+c1*c2*s3, c1*c2*c3-s1*s3, 0,
+                                     0, 0, 0, 1);
             }
         },
         YXY {
             @Override
             public Matrix matrix(double s1, double s2, double s3, double c1, double c2, double c3) {
-                return Matrix.square(c1*c3-c2*s1*s3, s1*s2, c1*s3+c2*c3*s1,
-                                     s2*s3, c2, -c3*s2,
-                                     -c3*s1-c1*c2*s3, c1*s2, c1*c2*c3-s1*s3);
+                return Matrix.square(c1*c3-c2*s1*s3, s1*s2, c1*s3+c2*c3*s1, 0,
+                                     s2*s3, c2, -c3*s2, 0,
+                                     -c3*s1-c1*c2*s3, c1*s2, c1*c2*c3-s1*s3, 0,
+                                     0, 0, 0, 1);
             }
         },
         YZY {
             @Override
             public Matrix matrix(double s1, double s2, double s3, double c1, double c2, double c3) {
-                return Matrix.square(c1*c2*c3-s1*s3, c1*s2, c3*s1+c1*c2*c3,
-                                     c3*s2, c2, s2*s3,
-                                     -c1*c3-c2*c3*s1, s1*s2, c1*c3-c2*s1*s3);
+                return Matrix.square(c1*c2*c3-s1*s3, c1*s2, c3*s1+c1*c2*c3, 0,
+                                     c3*s2, c2, s2*s3, 0,
+                                     -c1*c3-c2*c3*s1, s1*s2, c1*c3-c2*s1*s3, 0,
+                                     0, 0, 0, 1);
             }
         },
         ZYZ {
             @Override
             public Matrix matrix(double s1, double s2, double s3, double c1, double c2, double c3) {
-                return Matrix.square(c1*c2*c3-s1*s3, -c3*s1-c1*c2*c3, c1*s2,
-                                     c1*s3+c2*c3*s1, c1*c3-c2*s1*s3, s1*s2,
-                                     -c3*s2, s2*s3, c2);
+                return Matrix.square(c1*c2*c3-s1*s3, -c3*s1-c1*c2*c3, c1*s2, 0,
+                                     c1*s3+c2*c3*s1, c1*c3-c2*s1*s3, s1*s2, 0,
+                                     -c3*s2, s2*s3, c2, 0,
+                                     0, 0, 0, 1);
             }
         },
         // most common
         ZXZ {
             @Override
             public Matrix matrix(double s1, double s2, double s3, double c1, double c2, double c3) {
-                return Matrix.square(c1*c3-c2*s1*s3, -c1*s3-c2*c3*s1, s1*s2,
-                                     c3*s1+c1*c2*s3, c1*c2*c3-s1*s3, -c1*s2,
-                                     s2*s3, c3*s2, c2);
+                return Matrix.square(c1*c3-c2*s1*s3, -c1*s3-c2*c3*s1, s1*s2, 0,
+                                     c3*s1+c1*c2*s3, c1*c2*c3-s1*s3, -c1*s2, 0,
+                                     s2*s3, c3*s2, c2, 0,
+                                     0, 0, 0, 1);
             }
         };
 

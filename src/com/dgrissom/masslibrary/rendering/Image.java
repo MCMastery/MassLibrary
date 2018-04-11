@@ -3,18 +3,18 @@ package com.dgrissom.masslibrary.rendering;
 import com.dgrissom.masslibrary.math.geom.r2.Circle2d;
 import com.dgrissom.masslibrary.math.geom.r2.LineSegment2d;
 import com.dgrissom.masslibrary.math.geom.r2.Point2d;
+import com.dgrissom.masslibrary.math.geom.r2.PointSet2d;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Polygon;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Rectangle2d;
+import com.dgrissom.masslibrary.rendering.color.Color;
 import com.dgrissom.masslibrary.rendering.color.ColorSpace;
 import com.dgrissom.masslibrary.rendering.color.RGBColor;
-import com.dgrissom.masslibrary.rendering.color.Color;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class Image {
     private final BufferedImage image;
@@ -31,6 +31,7 @@ public class Image {
         this.image = image;
         this.g2d = this.image.createGraphics();
         this.colorSpace = ColorSpace.SRGB;
+        antialias(true);
     }
 
     public BufferedImage getImage() {
@@ -89,12 +90,12 @@ public class Image {
     }
 
     public void draw(Polygon polygon, Color color) {
-        for (LineSegment2d side : polygon.getSides())
+        for (LineSegment2d side : polygon.sides())
             draw(side, color);
     }
     public void fill(Polygon polygon, Color color) {
         setColor(color);
-        List<Point2d> vertices = polygon.vertices();
+        PointSet2d vertices = polygon.vertices();
         int[] xPoints = new int[vertices.size()];
         int[] yPoints = new int[vertices.size()];
         for (int i = 0; i < vertices.size(); i++) {

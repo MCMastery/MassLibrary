@@ -1,5 +1,7 @@
 package com.dgrissom.masslibrary.rendering.videos;
 
+import com.dgrissom.masslibrary.math.geom.r2.polygon.Rectangle2d;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +46,10 @@ public class Video {
         return this.height;
     }
 
+    public Rectangle2d bounds() {
+        return new Rectangle2d(this.width, this.height);
+    }
+
     public File videoOutputFile() {
         return new File(this.folder, OUTPUT_FILE_NAME);
     }
@@ -73,7 +79,7 @@ public class Video {
 
     // ffmpeg command to generate video
     // run this command from within the video folder
-    public String ffmpegCommand() {
+    public String ffmpegRenderCommand() {
          // ffmpeg -framerate 24 -i img%03d.png output.mp4;
         String frameName = FRAME_FILE_NAME.replace("{#}", "%0" + (frameFileNameZeros() + 1) + "d");
         frameName = FRAMES_FOLDER_NAME + frameName;
@@ -84,7 +90,7 @@ public class Video {
     }
 
     public void executeFFmpegCommand() throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", ffmpegCommand());
+        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", ffmpegRenderCommand());
         pb.redirectErrorStream(true);
         Process process = pb.start();
         BufferedReader inStreamReader = new BufferedReader(new InputStreamReader(process.getInputStream()));

@@ -182,4 +182,10 @@ public class Matrix {
     public static Matrix column(double... m) {
         return new Matrix(m, m.length, 1);
     }
+    public static Matrix identity(int size) {
+        Matrix matrix = new Matrix(size, size);
+        for (int i = 0; i < size; i++)
+            matrix.set(i, i, 1);
+        return matrix;
+    }
 }

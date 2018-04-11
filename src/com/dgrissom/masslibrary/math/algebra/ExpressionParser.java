@@ -44,12 +44,11 @@ public class ExpressionParser {
         return tokens;
     }
 
+    //todo
     // order nodes based on operator precedence
-    // *[+[4.0, 2.0], 2.0] (4+2*2) should become
-    // +[*[2.0, 2.0], 4.0] (2*2+4)
+    // *[+[1.0, 2.0], 3.0] (1+2*3) should become
+    // +[*[2.0, 3.0], 1.0] (2*3+1)
     private Tree order(Tree tree) {
-        System.out.println("Unordered: " + tree);
-
         return tree;
     }
 

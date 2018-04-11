@@ -46,6 +46,6 @@ public class TextFile implements Iterable<String> {
         Files.write(file.toPath(), this.lines);
     }
     public static TextFile load(File file) throws IOException {
-        return new TextFile(Files.readAllLines(file.toPath()));
+        return new TextFile(FileUtils.lines(file));
     }
 }

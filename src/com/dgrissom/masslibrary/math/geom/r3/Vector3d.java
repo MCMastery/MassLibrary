@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r3;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 
 public final class Vector3d implements XYZ {
     @Formatted
@@ -97,7 +97,7 @@ public final class Vector3d implements XYZ {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
     @Override
     public boolean equals(Object o) {

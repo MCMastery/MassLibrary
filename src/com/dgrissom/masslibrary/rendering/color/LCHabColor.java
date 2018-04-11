@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.rendering.color;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 
 // https://en.wikipedia.org/wiki/Colorfulness#Chroma_in_CIE_1976_L*a*b*_and_L*u*v*_color_spaces
 public class LCHabColor implements Color {
@@ -49,6 +49,6 @@ public class LCHabColor implements Color {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 }

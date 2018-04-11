@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r3.transform;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.geom.InvertibleTransform;
 import com.dgrissom.masslibrary.math.geom.r3.XYZ;
@@ -43,6 +43,6 @@ public class Translate3d implements InvertibleTransform, XYZ {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 }

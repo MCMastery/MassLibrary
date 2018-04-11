@@ -1,45 +1,42 @@
-package com.dgrissom.masslibrary.rendering.raytracer.objects;
+package com.dgrissom.masslibrary.rendering.raytracer;
 
 import com.dgrissom.masslibrary.math.geom.r3.Point3d;
 import com.dgrissom.masslibrary.math.geom.r3.Ray3d;
 import com.dgrissom.masslibrary.math.geom.r3.Sphere;
 import com.dgrissom.masslibrary.math.geom.r3.Vector3d;
-import com.dgrissom.masslibrary.rendering.raytracer.Material;
-import com.dgrissom.masslibrary.rendering.raytracer.RayTraceable;
 
 public class SphereObject extends Sphere implements RayTraceable {
-    private final Material material;
+    private Material material;
 
     public SphereObject(Point3d center, double radius, Material material) {
         super(center, radius);
         this.material = material;
     }
 
+    @Override
+    public Material getMaterial() {
+        return this.material;
+    }
+
     // https://en.wikipedia.org/wiki/Line–sphere_intersection
     @Override
-    public Point3d intersection(Ray3d ray) {
+    public RayHit hit(Ray3d ray) {
         Point3d c = getCenter();
         double r = getRadius();
         Vector3d l = ray.getDirection();
         Point3d o = ray.getOrigin();
+        double dotProd = l.dotProduct(o.subtract(c));
+        double addend = -dotProd;
+        double discriminant = dotProd * dotProd - Vector3d.from(o.subtract(c)).magnitudeSquared() + r * r;
 
-        Vector3d oMinusC = Vector3d.from(o.subtract(c));
-        double dotProd = l.dotProduct(oMinusC);
-        double discriminant = dotProd * dotProd - oMinusC.magnitudeSquared() + r * r;
+        // no solution
         if (discriminant < 0)
             return null;
 
         double sqrt = Math.sqrt(discriminant);
-        double d1 = -dotProd + sqrt;
-        double d2 = -dotProd - sqrt;
-
-        // return closest point
-        double d = (d1 < d2) ? d1 : d2;
-        return ray.point(d);
-    }
-
-    @Override
-    public Material getMaterial() {
-        return this.material;
+        double d1 = addend + sqrt;
+        double d2 = addend - sqrt;
+        double d = Math.min(d1, d2);
+        return new RayHit(this, ray, ray.point(d));
     }
 }

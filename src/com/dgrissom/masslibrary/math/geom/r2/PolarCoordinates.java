@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r2;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 
 // https://en.wikipedia.org/wiki/Polar_coordinate_system
 public final class PolarCoordinates {
@@ -57,6 +57,6 @@ public final class PolarCoordinates {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 }

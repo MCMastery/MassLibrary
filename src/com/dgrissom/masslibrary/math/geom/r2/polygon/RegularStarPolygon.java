@@ -2,8 +2,10 @@ package com.dgrissom.masslibrary.math.geom.r2.polygon;
 
 import com.dgrissom.masslibrary.math.geom.r2.LineSegment2d;
 import com.dgrissom.masslibrary.math.geom.r2.Point2d;
+import com.dgrissom.masslibrary.math.geom.r2.PointSet2d;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // https://en.wikipedia.org/wiki/Star_polygon
 public final class RegularStarPolygon implements Polygon {
@@ -14,7 +16,7 @@ public final class RegularStarPolygon implements Polygon {
     }
 
     @Override
-    public List<LineSegment2d> getSides() {
+    public List<LineSegment2d> sides() {
         return this.sides;
     }
 
@@ -28,7 +30,7 @@ public final class RegularStarPolygon implements Polygon {
             skip = 1;
 
         RegularPolygon convexEquivalent = RegularPolygon.fromVertices(vertexCount, center, circumradius);
-        List<Point2d> vertices = convexEquivalent.vertices();
+        PointSet2d vertices = convexEquivalent.vertices();
         List<LineSegment2d> sides = new ArrayList<>();
 
         // loop through each vertex, draw line from vertex to vertices(i+skip)

@@ -2,9 +2,8 @@ package com.dgrissom.masslibrary.rendering.color;
 
 import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.geom.r2.Point2d;
+import com.dgrissom.masslibrary.math.geom.r2.PointSet2d;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Polygon;
-
-import java.util.Arrays;
 
 // https://en.wikipedia.org/wiki/RGB_color_space
 public abstract class ColorSpace {
@@ -107,10 +106,10 @@ public abstract class ColorSpace {
     }
 
     public Polygon gamut() {
-        return Polygon.fromVertices(Arrays.asList(
+        return new PointSet2d(
                 new Point2d(this.r.x(), this.r.y()),
                 new Point2d(this.g.x(), this.g.y()),
                 new Point2d(this.b.x(), this.b.y())
-        ));
+        ).toPolygon();
     }
 }

@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r2;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.GeneralMath;
 import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.geom.Transform;
@@ -84,11 +84,17 @@ public final class Point2d implements XY, Transformable {
         return subtract(origin).angle();
     }
 
+    public Point2d round() {
+        return new Point2d(Math.round(this.x), Math.round(this.y));
+    }
     public Point2d clamp(Rectangle2d bounds) {
         return new Point2d(GeneralMath.clamp(this.x, bounds.left(), bounds.right()),
                 GeneralMath.clamp(this.y, bounds.top(), bounds.bottom()));
     }
 
+    public PolarCoordinates toPolar() {
+        return toPolar(origin());
+    }
     public PolarCoordinates toPolar(Point2d pole) {
         double magnitude = distance(pole);
         double angle = angle(pole);
@@ -125,7 +131,7 @@ public final class Point2d implements XY, Transformable {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
     @Override
     public boolean equals(Object o) {

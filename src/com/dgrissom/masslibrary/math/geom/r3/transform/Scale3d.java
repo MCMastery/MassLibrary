@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r3.transform;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.geom.InvertibleTransform;
 
@@ -27,9 +27,10 @@ public class Scale3d implements InvertibleTransform {
 
     @Override
     public Matrix matrix() {
-        return Matrix.square(this.sx, 0, 0,
-                             0, this.sy, 0,
-                             0, 0, this.sz);
+        return Matrix.square(this.sx, 0, 0, 0,
+                             0, this.sy, 0, 0,
+                             0, 0, this.sz, 0,
+                             0, 0, 0, 1);
     }
     @Override
     public Scale3d inverse() {
@@ -38,6 +39,6 @@ public class Scale3d implements InvertibleTransform {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 }

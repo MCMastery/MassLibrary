@@ -1,7 +1,8 @@
 package com.dgrissom.masslibrary.math.geom.r2;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
+import com.dgrissom.masslibrary.math.geom.r2.polygon.Triangle2d;
 
 // https://en.wikipedia.org/wiki/Circle
 public final class Circle2d {
@@ -40,6 +41,9 @@ public final class Circle2d {
     public double diameter() {
         return 2 * this.radius;
     }
+    public Circle2d setDiameter(double diameter) {
+        return new Circle2d(this.center, diameter / 2);
+    }
     public double circumference() {
         return 2 * Math.PI * this.radius;
     }
@@ -71,6 +75,13 @@ public final class Circle2d {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
+    }
+
+    public static Circle2d from(Point2d a, Point2d b, Point2d c) {
+        return new Triangle2d(a, b, c).circumcircle();
+    }
+    public static Circle2d from(Point2d a, Point2d b) {
+        return new Circle2d(a.add(b).divide(2), a.distance(b) / 2);
     }
 }

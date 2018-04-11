@@ -4,9 +4,9 @@ import com.dgrissom.masslibrary.math.geom.r2.Point2d;
 import com.dgrissom.masslibrary.physics.PhysicsObject2d;
 import com.dgrissom.masslibrary.rendering.Image;
 import com.dgrissom.masslibrary.rendering.color.RGBColor;
-import com.dgrissom.masslibrary.rendering.videos.Actor;
+import com.dgrissom.masslibrary.rendering.videos.VideoActor;
 
-public class BouncingBall extends PhysicsObject2d implements Actor {
+class BouncingBall extends PhysicsObject2d implements VideoActor {
     private Point2d center;
     private double width, height;
     private RGBColor color;

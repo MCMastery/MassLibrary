@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.rendering.color;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.Matrix;
 
 // https://en.wikipedia.org/wiki/CIE_1931_color_space
@@ -43,6 +43,13 @@ public class XYZColor implements Color {
         return new XYZColor(m.get(0, 0), m.get(1, 0), m.get(2, 0));
     }
 
+
+    public XYZColor mix(XYZColor b) {
+        return new XYZColor((this.x / 100) * (b.getX() / 100) * 100,
+                (this.y / 100) * (b.getY() / 100) * 100,
+                (this.z / 100) * (b.getZ() / 100) * 100);
+    }
+
     // https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
     public ChromaticityCoordinates toChromaticityCoordinates() {
         double x = this.x / (this.x + this.y + this.z);
@@ -76,6 +83,6 @@ public class XYZColor implements Color {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 }

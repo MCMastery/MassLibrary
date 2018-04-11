@@ -27,7 +27,6 @@ public class Scatterplot extends Plot {
         this.nodeStyle = nodeStyle;
         this.transform = new PlotTransform(new Point2d(getMargin(), height - getMargin()),
                 PlotTransform.HorizontalAxisDirection.RIGHT, PlotTransform.VerticalAxisDirection.UP, pixelsPerUnit);
-        antialias(true);
     }
 
     public void plot(Point2d... points) {

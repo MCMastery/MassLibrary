@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.rendering.color;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 
 // https://en.wikipedia.org/wiki/HSL_and_HSV
 public class HSLColor extends CylindricalColorModel {
@@ -53,6 +53,6 @@ public class HSLColor extends CylindricalColorModel {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 }

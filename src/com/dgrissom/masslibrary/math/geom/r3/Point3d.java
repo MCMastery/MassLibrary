@@ -1,10 +1,12 @@
 package com.dgrissom.masslibrary.math.geom.r3;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.geom.Transform;
 import com.dgrissom.masslibrary.math.geom.Transformable;
+import com.dgrissom.masslibrary.math.geom.r2.Point2d;
+import com.dgrissom.masslibrary.math.geom.r2.PolarCoordinates;
 
 public final class Point3d implements XYZ, Transformable {
     @Formatted
@@ -82,6 +84,12 @@ public final class Point3d implements XYZ, Transformable {
         return Math.sqrt(distanceSquared(other));
     }
 
+    // https://en.wikipedia.org/wiki/Cylindrical_coordinate_system#Cartesian_coordinates
+    public CylindricalCoordinates toCylindricalCoordinates() {
+        PolarCoordinates polar = new Point2d(this.x, this.y).toPolar(null);
+        return new CylindricalCoordinates(polar.getMagnitude(), polar.getAngle(), this.z);
+    }
+
     // you may want 4 rows (x,y,z,1) for homogeneous coordinates
     public Matrix toColumnMatrix(int rows) {
         double[] d = new double[rows];
@@ -96,6 +104,11 @@ public final class Point3d implements XYZ, Transformable {
         return new Point3d(matrix.get(0, 0), matrix.get(1, 0), matrix.get(2, 0));
     }
 
+    // simply removes the z component
+    public Point2d toPoint2d() {
+        return new Point2d(this.x, this.y);
+    }
+
     public Point3d multiply(Matrix matrix) {
         return fromColumnMatrix(matrix.multiply(toColumnMatrix(matrix.getRows())));
     }
@@ -104,13 +117,9 @@ public final class Point3d implements XYZ, Transformable {
         return multiply(transform.matrix());
     }
 
-    public Ray3d rayTo(Point3d point) {
-        return Ray3d.from(this, point);
-    }
-
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
     @Override
     public boolean equals(Object o) {

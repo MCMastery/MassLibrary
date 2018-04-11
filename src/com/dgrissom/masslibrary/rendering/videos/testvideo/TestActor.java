@@ -4,9 +4,9 @@ import com.dgrissom.masslibrary.Random;
 import com.dgrissom.masslibrary.math.geom.r2.polygon.Rectangle2d;
 import com.dgrissom.masslibrary.rendering.Image;
 import com.dgrissom.masslibrary.rendering.color.RGBColor;
-import com.dgrissom.masslibrary.rendering.videos.Actor;
+import com.dgrissom.masslibrary.rendering.videos.VideoActor;
 
-public class TestActor implements Actor {
+class TestActor implements VideoActor {
     private Rectangle2d bounds;
     private RGBColor color;
 

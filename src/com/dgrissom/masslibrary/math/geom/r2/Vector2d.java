@@ -1,7 +1,7 @@
 package com.dgrissom.masslibrary.math.geom.r2;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 
 public final class Vector2d implements XY {
     @Formatted
@@ -74,7 +74,12 @@ public final class Vector2d implements XY {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
     public Vector2d normalize() {
-        return divide(magnitude());
+        double magnitude = magnitude();
+        // we are (0,0)
+        // avoid division by zero and just return ourselves (0, 0)
+        if (magnitude == 0)
+            return this;
+        return divide(magnitude);
     }
     // https://en.wikipedia.org/wiki/Dot_product
     public double dotProduct(XY other) {
@@ -94,7 +99,7 @@ public final class Vector2d implements XY {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
     @Override
     public boolean equals(Object o) {

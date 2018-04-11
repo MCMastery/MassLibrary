@@ -1,11 +1,11 @@
 package com.dgrissom.masslibrary.math.geom.r2.transform;
 
 import com.dgrissom.masslibrary.Formatted;
-import com.dgrissom.masslibrary.Formatter;
+import com.dgrissom.masslibrary.ObjectFormatter;
 import com.dgrissom.masslibrary.math.Matrix;
 import com.dgrissom.masslibrary.math.geom.InvertibleTransform;
 
-// clockwise
+// counter-clockwise
 public class Rotate2d implements InvertibleTransform {
     @Formatted
     private final double radians;
@@ -22,8 +22,9 @@ public class Rotate2d implements InvertibleTransform {
     public Matrix matrix() {
         double cos = Math.cos(this.radians);
         double sin = Math.sin(this.radians);
-        return Matrix.square(cos, sin,
-                             -sin, cos);
+        return Matrix.square(cos, -sin, 0,
+                             sin, cos, 0,
+                             0, 0, 1);
     }
     @Override
     public Rotate2d inverse() {
@@ -32,7 +33,7 @@ public class Rotate2d implements InvertibleTransform {
 
     @Override
     public String toString() {
-        return Formatter.format(this);
+        return ObjectFormatter.format(this);
     }
 
     public double toDegrees() {
